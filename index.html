@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MockAPI // Developer Testing Ground</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --surface-color: #111827;
+            --border-color: #1f2937;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-pink: #ec4899;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Share Tech Mono', monospace;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+        }
+
+        p.tagline {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            margin-bottom: 15px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 5px rgba(6, 182, 212, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            height: 120px;
+        }
+
+        .btn {
+            background: var(--accent-cyan);
+            color: var(--bg-color);
+            border: none;
+            width: 100%;
+            padding: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #0891b2;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--accent-pink);
+            color: var(--accent-pink);
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-pink);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+        }
+
+        .endpoints-list {
+            margin-top: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .endpoint-item {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .endpoint-info span.method {
+            font-weight: bold;
+            color: var(--accent-green);
+            margin-right: 8px;
+        }
+
+        .endpoint-info span.path {
+            color: var(--accent-cyan);
+        }
+
+        .endpoint-actions button {
+            background: transparent;
+            border: 1px solid var(--accent-pink);
+            color: var(--accent-pink);
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            border-radius: 3px;
+        }
+
+        .endpoint-actions button:hover {
+            background: var(--accent-pink);
+            color: #fff;
+        }
+
+        .response-viewer {
+            background: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--accent-green);
+            min-height: 200px;
+            max-height: 350px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>MOCK_API // TESTING GROUND</h1>
+        <p class="tagline">Create custom mock endpoints, define JSON responses, and test your frontend applications instantly.</p>
+    </header>
+
+    <div class="main-container">
+        <!-- Left Panel: Create & Manage Mock Endpoints -->
+        <div class="panel">
+            <h2>Create Mock Endpoint</h2>
+            <div class="form-group">
+                <label>HTTP METHOD</label>
+                <select id="mockMethod">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ENDPOINT PATH (e.g., /api/users)</label>
+                <input type="text" id="mockPath" placeholder="/api/products">
+            </div>
+            <div class="form-group">
+                <label>RESPONSE BODY (JSON Format)</label>
+                <textarea id="mockResponse">{
+  "status": "success",
+  "data": [
+    {"id": 1, "name": "Item Alpha", "price": 99.99},
+    {"id": 2, "name": "Item Beta", "price": 149.50}
+  ]
+}</textarea>
+            </div>
+            <button class="btn" onclick="saveEndpoint()">Save Mock Endpoint</button>
+
+            <h2 style="margin-top: 25px;">Saved Endpoints</h2>
+            <div class="endpoints-list" id="endpointsContainer">
+                <!-- Endpoints will load here -->
+            </div>
+        </div>
+
+        <!-- Right Panel: Test & Execute API -->
+        <div class="panel">
+            <h2>Test API Playground</h2>
+            <div class="form-group">
+                <label>SELECT ENDPOINT TO TEST</label>
+                <select id="testEndpointSelect" onchange="loadTestPath()">
+                    <option value="">-- Choose Endpoint --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>REQUEST URL</label>
+                <input type="text" id="testUrl" placeholder="Select an endpoint above" readonly>
+            </div>
+            <button class="btn" onclick="executeTest()">Send Request</button>
+            <button class="btn btn-secondary" onclick="clearLogs()">Clear Console</button>
+
+            <h2 style="margin-top: 25px;">Response Output</h2>
+            <div class="response-viewer" id="responseOutput">// Response will appear here after execution...</div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 MOCK_API LABS. BUILT FOR SOFTWARE ENGINEERS.
+    </footer>
+
+    <script>
+        // LocalStorage se mock endpoints load karna ya default set karna
+        let endpoints = JSON.parse(localStorage.getItem('mock_endpoints')) || [
+            {
+                method: 'GET',
+                path: '/api/users',
+                response: '{\n  "users": [\n    {"id": 1, "name": "Alice"}, \n    {"id": 2, "name": "Bob"}\n  ]\n}'
+            }
+        ];
+
+        function init() {
+            renderEndpoints();
+            updateTestDropdown();
+        }
+
+        // Endpoint save karne ka function
+        function saveEndpoint() {
+            const method = document.getElementById('mockMethod').value;
+            let path = document.getElementById('mockPath').value.trim();
+            const response = document.getElementById('mockResponse').value;
+
+            if (!path) {
+                alert('Please enter a valid endpoint path.');
+                return;
+            }
+
+            if (!path.startsWith('/')) {
+                path = '/' + path;
+            }
+
+            // JSON validation check
+            try {
+                JSON.parse(response);
+            } catch (e) {
+                alert('Invalid JSON format in Response Body! Please fix it.');
+                return;
+            }
+
+            // Check if endpoint already exists, update or push
+            const existingIndex = endpoints.findIndex(ep => ep.path === path && ep.method === method);
+            if (existingIndex > -1) {
+                endpoints[existingIndex].response = response;
+            } else {
+                endpoints.push({ method, path, response });
+            }
+
+            localStorage.setItem('mock_endpoints', JSON.stringify(endpoints));
+            init();
+            alert('Mock endpoint saved successfully!');
+        }
+
+        // Endpoints list render karna left panel mein
+        function renderEndpoints() {
+            const container = document.getElementById('endpointsContainer');
+            container.innerHTML = '';
+
+            if (endpoints.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No mock endpoints created yet.</p>';
+                return;
+            }
+
+            endpoints.forEach((ep, index) => {
+                container.innerHTML += `
+                    <div class="endpoint-item">
+                        <div class="endpoint-info">
+                            <span class="method">${ep.method}</span>
+                            <span class="path">${ep.path}</span>
+                        </div>
+                        <div class="endpoint-actions">
+                            <button onclick="deleteEndpoint(${index})">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Test dropdown update karna
+        function updateTestDropdown() {
+            const select = document.getElementById('testEndpointSelect');
+            select.innerHTML = '<option value="">-- Choose Endpoint --</option>';
+            endpoints.forEach((ep, index) => {
+                select.innerHTML += `<option value="${index}">[${ep.method}] ${ep.path}</option>`;
+            });
+        }
+
+        // Jab user dropdown se endpoint select kare
+        function loadTestPath() {
+            const index = document.getElementById('testEndpointSelect').value;
+            const urlInput = document.getElementById('testUrl');
+            if (index === "") {
+                urlInput.value = "";
+                return;
+            }
+            urlInput.value = window.location.origin + endpoints[index].path;
+        }
+
+        // API test request execute karna
+        function executeTest() {
+            const index = document.getElementById('testEndpointSelect').value;
+            const output = document.getElementById('responseOutput');
+
+            if (index === "") {
+                output.innerText = "ERROR: Please select a mock endpoint to test.";
+                return;
+            }
+
+            const selectedEp = endpoints[index];
+            output.innerText = "Sending request to mock server...";
+
+            setTimeout(() => {
+                try {
+                    const parsedJson = JSON.parse(selectedEp.response);
+                    output.innerText = JSON.stringify(parsedJson, null, 2);
+                } catch (e) {
+                    output.innerText = selectedEp.response;
+                }
+            }, 300); // 300ms network delay simulation
+        }
+
+        // Endpoint delete karna
+        function deleteEndpoint(index) {
+            endpoints.splice(index, 1);
+            localStorage.setItem('mock_endpoints', JSON.stringify(endpoints));
+            init();
+            document.getElementById('testUrl').value = '';
+            document.getElementById('responseOutput').innerText = '// Response will appear here after execution...';
+        }
+
+        // Console clear karna
+        function clearLogs() {
+            document.getElementById('responseOutput').innerText = '// Response cleared.';
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
